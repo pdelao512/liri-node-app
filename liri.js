@@ -75,8 +75,11 @@ if (process.argv[2] === "movie-this"){
             console.log("Language: " + JSON.parse(body).Language);
             console.log("Actors: " + JSON.parse(body).Actors);
             console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].value);
+            console.log("Plot: " + JSON.parse(body).Plot);
 
-        var movieData = "\nTitle: " + JSON.parse(body).Title + "\nRelease Year: " + JSON.parse(body).Year + "\nIMDB Rating: " + JSON.parse(body).imdbRating + "\nRotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value + "\nCountry Produced: " + JSON.parse(body).Country + "\nLanguage: " + JSON.parse(body).Language + "\nPlot: " + JSON.parse(body).Plot + "\nActors: " + JSON.parse(body).Actors;
+        var movieData = "\nTitle: " + JSON.parse(body).Title + "\nYear: " + JSON.parse(body).Year + "\nIMDB Rating: " +
+         JSON.parse(body).imdbRating + "\nRotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value + "\nLanguage: " + 
+         JSON.parse(body).Language + "\nPlot: " + JSON.parse(body).Plot + "\nActors: " + JSON.parse(body).Actors;
         
         fs.appendFile("log.txt", movieData, function(err) {
             if (err) {
