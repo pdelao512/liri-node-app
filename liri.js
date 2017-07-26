@@ -35,6 +35,7 @@ client.get('statuses/user_timeline', params, function(error, tweets, response) {
 };
 //===============================================================================
 //if the second index item is 'spotify-this-song', then this will run.
+
 if (process.argv[2] === "spotify-this-song"){
   var song = process.argv[3];
   var params = {type: "track",query: song, limit: 5};
@@ -44,6 +45,7 @@ client.search(params, function(err,data){
     if (err) {
         return console.log('Error occurred: ' + err);
      }
+
     else{
       for(i=0;i<5;i++){
         console.log("--------------------------------------------");
@@ -54,38 +56,66 @@ client.search(params, function(err,data){
         console.log("--------------------------------------------");
       }
     }
+    
     }); //close the spotify search
 }; //close the spotify if command statement
 
 //==================================================================
-if (command === "movie-this"){
-var nodeArgs = process.argv;
-// Create an empty variable for holding the song name
-    var movie = "";
-// Loop through all the words in the node argument
-for (var i = 3; i < nodeArgs.length; i++) {
-    if (i > 3 && i < nodeArgs.length) {
-    movie = movie + "+" + nodeArgs[i];
-    //else and close if
-    }else{
-    movie += nodeArgs[i];
-  }// close the else
-} // close the for loop
- request('http://www.omdbapi.com/?t='+ movie + 'tt3896198&apikey=ee9c2946', function (error, response, body) {
+if (process.argv[2] === "movie-this"){
+  var movie = process.argv[3];
+  var queryURL = "http://www.omdbapi.com/?t=" + movie + "&y=&plot=full&tomatoes=true&r=json&apikey=40e9cece";
+
+  request(queryURL, function(error, response, body) {
         if (!error) {
           // console.log(JSON.parse(body).Title);
-          var parsed = JSON.parsed(body);
-            console.log("Title: " + parsed.Title);
-            console.log("Year: " + parsed.Year);
-            console.log("IMDB Ratings: " + parsed.Ratings[0]);
-            console.log("Language: " + parsed.Language);
-            console.log("Plot: " + parsed.Plot);
-            console.log("Actors: " + parsed.Actors);
-            console.log("Rotten Tomatoes: " + parsed.Ratings[1]);
-        }// end of if
-        else{
-          console.log("Error!" + error);
-        }
-});// end of function
+          // var parse = JSON.parse(body);
+            console.log("Title: " + JSON.parse(body).Title);
+            console.log("Year: " + JSON.parse(body).Year);
+            console.log("IMDB Ratings: " + JSON.parse(body).imdbRating);
+            console.log("Language: " + JSON.parse(body).Language);
+            console.log("Actors: " + JSON.parse(body).Actors);
+            console.log("Rotten Tomatoes: " + JSON.parse(body).Ratings[1].value);
 
-}; // end if command
+        var movieData = "\nTitle: " + JSON.parse(body).Title + "\nRelease Year: " + JSON.parse(body).Year + "\nIMDB Rating: " + JSON.parse(body).imdbRating + "\nRotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value + "\nCountry Produced: " + JSON.parse(body).Country + "\nLanguage: " + JSON.parse(body).Language + "\nPlot: " + JSON.parse(body).Plot + "\nActors: " + JSON.parse(body).Actors;
+        
+        fs.appendFile("log.txt", movieData, function(err) {
+            if (err) {
+              console.log(err);
+            }
+             else {
+                console.log("Content Added!");
+            }
+      });
+    
+   
+    }
+    });
+}
+//=========================================================================
+ if (process.argv[2] === "do-what-it-says"){
+
+  fs.readFile("random.txt", "UTF8", function(error, data) {
+
+   dataArray = data.split(",");
+    song = dataArray[1];
+    var params = {type: "track",query: song, limit: 5};
+
+   var client = new spotify(keys.spotifyKeys);
+    client.search(params, function(err,data){
+    if (err) {
+        return console.log('Error occurred: ' + err);
+     }
+    else{
+      for(i=0;i< 1;i++){
+        console.log("--------------------------------------------");
+        console.log("Artist: " + data.tracks.items[i].artists[0].name);
+        console.log("Song: " + data.tracks.items[i].name);
+        console.log("Preview Link: " + data.tracks.items[i].preview_url);
+        console.log("Album: " + data.tracks.items[i].album.name);
+        console.log("--------------------------------------------");
+      }
+    }
+  });
+
+  });
+}
