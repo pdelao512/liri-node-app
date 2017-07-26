@@ -4,18 +4,18 @@ var twitter = require('twitter');
 var spotify = require('node-spotify-api');
 var request = require('request');
 var keys = require('./keys.js');
-var omdb = require("omdb");
+// var omdb = require("omdb");
 var fs = require('fs');
 var command = process.argv[2];
 
 
 //get info for key file.
-var client = new twitter({
-      consumer_key: key.twitterKeys.consumer_key,
-      consumer_secret: key.twitterKeys.consumer_secret,
-      access_token_key: key.twitterKeys.access_token_key,
-      access_token_secret: key.twitterKeys.access_token_secret,
-  });
+var client = new twitter(keys.twitterKeys);
+      // consumer_key: key.twitterKeys.consumer_key,
+      // consumer_secret: key.twitterKeys.consumer_secret,
+      // access_token_key: key.twitterKeys.access_token_key,
+      // access_token_secret: key.twitterKeys.access_token_secret,
+  // };
 //add screen name to pull up tweets
   var params = {screen_name: 'Watson5122'};
 //if the item in the second index is 'my-tweets', this will run.
@@ -35,10 +35,10 @@ client.get('statuses/user_timeline', params, function(error, tweets, response) {
 };
 //===============================================================================
 //if the second index item is 'spotify-this-song', then this will run.
-if (process.argv[2] === "spotify-this-song" && process.argv[3]){
+if (process.argv[2] === "spotify-this-song"){
   var song = process.argv[3];
   var params = {type: "track",query: song, limit: 5};
-  var client = new Spotify(keys.spotifyKeys);
+  var client = new spotify(keys.spotifyKeys);
 
 client.search(params, function(err,data){
     if (err) {
@@ -54,7 +54,7 @@ client.search(params, function(err,data){
         console.log("--------------------------------------------");
       }
     }
-  }); //close the spotify search
+    }); //close the spotify search
 }; //close the spotify if command statement
 
 //==================================================================
@@ -74,14 +74,14 @@ for (var i = 3; i < nodeArgs.length; i++) {
  request('http://www.omdbapi.com/?t='+ movie + 'tt3896198&apikey=ee9c2946', function (error, response, body) {
         if (!error) {
           // console.log(JSON.parse(body).Title);
-          var parsed = JSON.parse(body);
-            console.log("Title: " + parse.Title);
-            console.log("Year: " + parse.Year);
-            console.log("IMDB Ratings: " + parse.Ratings[0]);
-            console.log("Language: " + parse.Language);
-            console.log("Plot: " + parse.Plot);
-            console.log("Actors: " + parse.Actors);
-            console.log("Rotten Tomatoes: " + parse.Ratings[1]);
+          var parsed = JSON.parsed(body);
+            console.log("Title: " + parsed.Title);
+            console.log("Year: " + parsed.Year);
+            console.log("IMDB Ratings: " + parsed.Ratings[0]);
+            console.log("Language: " + parsed.Language);
+            console.log("Plot: " + parsed.Plot);
+            console.log("Actors: " + parsed.Actors);
+            console.log("Rotten Tomatoes: " + parsed.Ratings[1]);
         }// end of if
         else{
           console.log("Error!" + error);
